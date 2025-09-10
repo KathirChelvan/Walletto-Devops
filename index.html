@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Walletto</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Firebase CDN -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <!-- React CDNs -->
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-router-dom@6.26.2/dist/umd/react-router-dom.min.js"></script>
+  <!-- Babel for JSX -->
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.25.6/babel.min.js"></script>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="module" src="/src/main.jsx">
+    // Firebase configuration (Replace with your actual Firebase config)
+    const firebaseConfig = {
+      apiKey: "AIzaSyCfHrGMJxL6l4wvY3cwnJS0lqFB8N-pkGI",
+      authDomain: "walletto-57635.firebaseapp.com",
+      projectId: "walletto-57635",
+      storageBucket: "walletto-57635.firebasestorage.app",
+      messagingSenderId: "950474308836",
+      appId: "1:950474308836:web:383c646eee89755e80c0f1",
+      measurementId: "G-ZB4S3BTWVQ"
+    };
+
+    // Initialize Firebase
+    const firebase = window.firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    // Login Component
+    function Login() {
+      const [email, setEmail] = React.useState("");
+      const [password, setPassword] = React.useState("");
+      const [error, setError] = React.useState("");
+      const [loading, setLoading] = React.useState(false);
+      const navigate = ReactRouterDOM.useNavigate();
+
+      const handleLogin = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        setError("");
+        
+        try {
+          const userCredential = await signInWithEmailAndPassword(auth, email, password);
+          console.log("Login successful!", userCredential.user);
+          navigate("/dashboard"); 
+        } catch (err) {
+          console.error("Login error:", err);
+          switch (err.code) {
+            case 'auth/invalid-credential':
+            case 'auth/user-not-found':
+            case 'auth/wrong-password':
+              setError('Invalid email or password. Please check your credentials.');
+              break;
+            case 'auth/invalid-email':
+              setError('Please enter a valid email address.');
+              break;
+            case 'auth/user-disabled':
+              setError('This account has been disabled. Please contact support.');
+              break;
+            case 'auth/too-many-requests':
+              setError('Too many failed attempts. Please try again later.');
+              break;
+            case 'auth/network-request-failed':
+              setError('Network error. Please check your connection.');
+              break;
+            default:
+              setError('Login failed. Please try again.');
+          }
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      return (
+        <div 
+          className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden"
+          style={{background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'}}
+        >
+          <div className="absolute top-10 left-10 w-20 h-20 bg-white/10 rounded-full animate-pulse"></div>
+          <div className="absolute top-32 right-20 w-16 h-16 bg-white/10 rounded-full animate-pulse" style={{animationDelay: '2s'}}></div>
+          <div className="absolute bottom-20 left-32 w-24 h-24 bg-white/10 rounded-full animate-pulse" style={{animationDelay: '4s'}}></div>
+          
+          <div className="w-full max-w-md relative z-10">
+            <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-8 shadow-2xl">
+              <div className="text-center mb-8">
+                <div className="relative inline-flex items-center justify-center w-20 h-20 mb-4">
+                  <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full animate-ping opacity-20"></div>
+                  <div className="relative bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full w-16 h-16 flex items-center justify-center">
+                    <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
+                            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                    </svg>
+                  </div>
+                </div>
+                <h1 className="text-3xl font-bold text-gray-800 mb-2">Walletto</h1>
+                <p className="text-gray-600">Welcome back to your financial journey</p>
+              </div>
+              
+              <div className="space-y-6">
+                <div>
+                  <label className="block text-gray-700 font-semibold mb-2" htmlFor="email">
+                    Email Address
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="email"
+                      id="email"
+                      className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:border-indigo-500 focus:outline-none transition-all duration-300 focus:transform focus:scale-105"
+                      placeholder="your@email.com"
+                      value={email}
+                      required
+                      onChange={(e) => {
+                        setEmail(e.target.value);
+                        setError("");
+                      }}
+                    />
+                    <svg className="absolute left-4 top-3.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
+                            d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
+                    </svg>
+                  </div>
+                </div>
+                
+                <div>
+                  <label className="block text-gray-700 font-semibold mb-2" htmlFor="password">
+                    Password
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="password"
+                      id="password"
+                      className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:border-indigo-500 focus:outline-none transition-all duration-300 focus:transform focus:scale-105"
+                      placeholder="••••••••"
+                      value={password}
+                      required
+                      onChange={(e) => {
+                        setPassword(e.target.value);
+                        setError("");
+                      }}
+                    />
+                    <svg className="absolute left-4 top-3.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
+                            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                  </div>
+                </div>
+                
+                {error && (
+                  <div className="bg-red-50 border border-red-200 rounded-xl p-4 animate-shake">
+                    <div className="flex items-center">
+                      <svg className="w-5 h-5 text-red-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
+                              d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <p className="text-red-700 text-sm font-medium">{error}</p>
+                    </div>
+                  </div>
+                )}
+                
+                <button 
+                  type="button" 
+                  disabled={loading}
+                  className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold py-3 px-4 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                  onClick={handleLogin}
+                >
+                  <div className="flex items-center justify-center">
+                    {loading && (
+                      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                    )}
+                    {loading ? 'Signing In...' : 'Sign In'}
+                  </div>
+                </button>
+                
+                <div className="text-center">
+                  <a href="#" className="text-indigo-600 hover:text-indigo-800 text-sm font-semibold hover:underline transition-colors duration-200">
+                    Forgot your password?
+                  </a>
+                </div>
+              </div>
+              
+              <div className="mt-8 pt-6 border-t border-gray-200">
+                <p className="text-center text-gray-600 text-sm">
+                  Don't have an account?{' '}
+                  <ReactRouterDOM.Link to="/signup" className="text-indigo-600 hover:text-indigo-800 font-semibold hover:underline transition-colors duration-200">
+                    Create one here
+                  </ReactRouterDOM.Link>
+                </p>
+              </div>
+            </div>
+            
+            <div className="mt-6 text-center">
+              <div className="flex items-center justify-center space-x-6 text-white/90 text-xs">
+                <div className="flex items-center bg-white/10 rounded-full px-3 py-1 backdrop-blur-sm">
+                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
+                          d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  </svg>
+                  256-bit SSL Security
+                </div>
+                <div className="flex items-center bg-white/10 rounded-full px-3 py-1 backdrop-blur-sm">
+                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
+                          d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  </svg>
+                  Data Protected
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // Signup Component
+    function Signup() {
+      const [formData, setFormData] = React.useState({
+        email: '',
+        password: '',
+        name: '',
+        age: '',
+        monthlySalary: '',
+        passiveIncome: '',
+        recurringExpenses: '',
+        variableExpenses: '',
+        oneTimeExpenses: '',
+        bankBalance: '',
+        country: '',
+        financialGoal: '',
+        currentSavings: '',
+        emergencyFundStatus: '',
+        investmentTypes: '',
+        loans: '',
+        creditCardDues: '',
+        emiDetails: '',
+        bankAccounts: '',
+        propertyOwnership: '',
+        carOwnership: '',
+      });
+      const [error, setError] = React.useState('');
+      const [loading, setLoading] = React.useState(false);
+      const navigate = ReactRouterDOM.useNavigate();
+
+      const handleChange = (e) => {
+        setFormData({
+          ...formData,
+          [e.target.name]: e.target.value
+        });
+      };
+
+      const handleSignup = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        setError('');
+
+        if (formData.password.length < 6) {
+          setError('Password must be at least 6 characters');
+          setLoading(false);
+          return;
+        }
+
+        try {
+          const userCredential = await auth.createUserWithEmailAndPassword(formData.email, formData.password);
+          const user = userCredential.user;
+
+          await db.collection('users').doc(user.uid).set({
+            name: formData.name,
+            age: parseInt(formData.age) || 0,
+            monthlySalary: parseFloat(formData.monthlySalary) || 0,
+            passiveIncome: parseFloat(formData.passiveIncome) || 0,
+            recurringExpenses: parseFloat(formData.recurringExpenses) || 0,
+            variableExpenses: parseFloat(formData.variableExpenses) || 0,
+            oneTimeExpenses: parseFloat(formData.oneTimeExpenses) || 0,
+            bankBalance: parseFloat(formData.bankBalance) || 0,
+            country: formData.country,
+            financialGoal: formData.financialGoal,
+            currentSavings: parseFloat(formData.currentSavings) || 0,
+            emergencyFundStatus: formData.emergencyFundStatus,
+            investmentTypes: formData.investmentTypes,
+            loans: formData.loans,
+            creditCardDues: parseFloat(formData.creditCardDues) || 0,
+            emiDetails: formData.emiDetails,
+            bankAccounts: formData.bankAccounts,
+            propertyOwnership: formData.propertyOwnership,
+            carOwnership: formData.carOwnership,
+            email: user.email,
+            createdAt: new Date(),
+          });
+
+          console.log("Signup successful! Redirecting to dashboard.");
+          navigate('/dashboard');
+        } catch (error) {
+          console.error("Error during signup:", error);
+          switch (error.code) {
+            case 'auth/email-already-in-use':
+              setError('This email is already registered');
+              break;
+            case 'auth/invalid-email':
+              setError('Please enter a valid email');
+              break;
+            case 'auth/weak-password':
+              setError('Password should be at least 6 characters');
+              break;
+            default:
+              setError('Signup failed: ' + error.message);
+          }
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      return (
+        <div 
+          className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden"
+          style={{background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'}}
+        >
+          <div className="absolute top-10 left-10 w-20 h-20 bg-white/10 rounded-full animate-pulse"></div>
+          <div className="absolute top-32 right-20 w-16 h-16 bg-white/10 rounded-full animate-pulse" style={{animationDelay: '2s'}}></div>
+          <div className="absolute bottom-20 left-32 w-24 h-24 bg-white/10 rounded-full animate-pulse" style={{animationDelay: '4s'}}></div>
+          
+          <div className="w-full max-w-md relative z-10">
+            <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-8 shadow-2xl">
+              <div className="text-center mb-8">
+                <div className="relative inline-flex items-center justify-center w-20 h-20 mb-4">
+                  <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full animate-ping opacity-20"></div>
+                  <div className="relative bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full w-16 h-16 flex items-center justify-center">
+                    <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
+                            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                    </svg>
+                  </div>
+                </div>
+                <h1 className="text-3xl font-bold text-gray-800 mb-2">Walletto</h1>
+                <p className="text-gray-600">Create your account to start your financial journey</p>
+              </div>
+              
+              <div className="space-y-6">
+                <div>
+                  <label className="block text-gray-700 font-semibold mb-2" htmlFor="email">
+                    Email Address
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:border-indigo-500 focus:outline-none transition-all duration-300 focus:transform focus:scale-105"
+                      placeholder="your@email.com"
+                      value={formData.email}
+                      onChange={handleChange}
+                      required
+                    />
+                    <svg className="absolute left-4 top-3.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
+                            d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
+                    </svg>
+                  </div>
+                </div>
+                
+                <div>
+                  <label className="block text-gray-700 font-semibold mb-2" htmlFor="password">
+                    Password
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="password"
+                      id="password"
+                      name="password"
+                      className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:border-indigo-500 focus:outline-none transition-all duration-300 focus:transform focus:scale-105"
+                      placeholder="••••••••"
+                      value={formData.password}
+                      onChange={handleChange}
+                      required
+                      minLength="6"
+                    />
+                    <svg className="absolute left-4 top-3.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
+                            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                  </div>
+                </div>
+                
+                <div>
+                  <label className="block text-gray-700 font-semibold mb-2" htmlFor="name">
+                    Full Name
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      id="name"
+                      name="name"
+                      className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:border-indigo-500 focus:outline-none transition-all duration-300 focus:transform focus:scale-105"
+                      placeholder="Full Name"
+                      value={formData.name}
+                      onChange={handleChange}
+                      required
+                    />
+                    <svg className="absolute left-4 top-3.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
+                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                  </div>
+                </div>
+                
+                <div>
+                  <label className="block text-gray-700 font-semibold mb-2" htmlFor="age">
+                    Age
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="number"
+                      id="age"
+                      name="age"
+                      className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:border-indigo-500 focus:outline-none transition-all duration-300 focus:transform focus:scale-105"
+                      placeholder="Age"
+                      value={formData.age}
+                      onChange={handleChange}
+                      required
+                    />
+                    <svg className="absolute left-4 top-3.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
+                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                  </div>
+                </div>
+                
+                <h3 className="text-lg font-semibold text-gray-800">Financial Information</h3>
+                
+                <div>
+                  <label className="block text-gray-700 font-semibold mb-2" htmlFor="monthlySalary">
+                    Monthly Salary
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="number"
+                      id="monthlySalary"
+                      name="monthlySalary"
+                      className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:border-indigo-500 focus:outline-none transition-all duration-300 focus:transform focus:scale-105"
+                      placeholder="Monthly Salary"
+                      value={formData.monthlySalary}
+                      onChange={handleChange}
+                      required
+                    />
+                    <svg className="absolute left-4 top-3.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
+                            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                    </svg>
+                  </div>
+                </div>
+                
+                <div>
+                  <label className="block text-gray-700 font-semibold mb-2" htmlFor="passiveIncome">
+                    Passive Income
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="number"
+                      id="passiveIncome"
+                      name="passiveIncome"
+                      className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:border-indigo-500 focus:outline-none transition-all duration-300 focus:transform focus:scale-105"
+                      placeholder="Passive Income"
+                      value={formData.passiveIncome}
+                      onChange={handleChange}
+                      required
+                    />
+                    <svg className="absolute left-4 top-3.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
+                            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                    </svg>
+                  </div>
+                </div>
+                
+                <div>
+                  <label className="block text-gray-700 font-semibold mb-2" htmlFor="recurringExpenses">
+                    Recurring Expenses
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="number"
+                      id="recurringExpenses"
+                      name="recurringExpenses"
+                      className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:border-indigo-500 focus:outline-none transition-all duration-300 focus:transform focus:scale-105"
+                      placeholder="Recurring Expenses"
+                      value={formData.recurringExpenses}
+                      onChange={handleChange}
+                      required
+                    />
+                    <svg className="absolute left-4 top-3.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
+                            d="M17 9V7a5 5 0 00-10 0v2m-2 4h14a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm-2-2h10" />
+                    </svg>
+                  </div>
+                </div>
+                
+                <div>
+                  <label className="block text-gray-700 font-semibold mb-2" htmlFor="variableExpenses">
+                    Variable Expenses
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="number"
+                      id="variableExpenses"
+                      name="variableExpenses"
+                      className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:border-indigo-500 focus:outline-none transition-all duration-300 focus:transform focus:scale-105"
+                      placeholder="Variable Expenses"
+                      value={formData.variableExpenses}
+                      onChange={handleChange}
+                      required
+                    />
+                    <svg className="absolute left-4 top-3.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
+                            d="M17 9V7a5 5 0 00-10 0v2m-2 4h14a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm-2-2h10" />
+                    </svg>
+                  </div>
+                </div>
+                
+                <div>
+                  <label className="block text-gray-700 font-semibold mb-2" htmlFor="oneTimeExpenses">
+                    One-time Expenses
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="number"
+                      id="oneTimeExpenses"
+                      name="oneTimeExpenses"
+                      className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:border-indigo-500 focus:outline-none transition-all duration-300 focus:transform focus:scale-105"
+                      placeholder="One-time Expenses"
+                      value={formData.oneTimeExpenses}
+                      onChange={handleChange}
+                      required
+                    />
+                    <svg className="absolute left-4 top-3.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
+                            d="M17 9V7a5 5 0 00-10 0v2m-2 4h14a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm-2-2h10" />
+                    </svg>
+                  </div>
+                </div>
+                
+                <div>
+                  <label className="block text-gray-700 font-semibold mb-2" htmlFor="bankBalance">
+                    Bank Balance
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="number"
+                      id="bankBalance"
+                      name="bankBalance"
+                      className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:border-indigo-500 focus:outline-none transition-all duration-300 focus:transform focus:scale-105"
+                      placeholder="Current Bank Balance"
+                      value={formData.bankBalance}
+                      onChange={handleChange}
+                      required
+                    />
+                    <svg className="absolute left-4 top-3.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
+                            d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                    </svg>
+                  </div>
+                </div>
+                
+                <div>
+                  <label className="block text-gray-700 font-semibold mb-2" htmlFor="country">
+                    Country
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      id="country"
+                      name="country"
+                      className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:border-indigo-500 focus:outline-none transition-all duration-300 focus:transform focus:scale-105"
+                      placeholder="Country"
+                      value={formData.country}
+                      onChange={handleChange}
+                      required
+                    />
+                    <svg className="absolute left-4 top-3.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
+                            d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012-2v-1a2 2 0 012-2h2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.945M12 20.071V18.5a2.5 2.5 0 012.5-2.5h1.945" />
+                    </svg>
+                  </div>
+                </div>
+                
+                <div>
+                  <label className="block text-gray-700 font-semibold mb-2" htmlFor="financialGoal">
+                    Financial Goal
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      id="financialGoal"
+                      name="financialGoal"
+                      className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:border-indigo-500 focus:outline-none transition-all duration-300 focus:transform focus:scale-105"
+                      placeholder="Financial Goal"
+                      value={formData.financialGoal}
+                      onChange={handleChange}
+                      required
+                    />
+                    <svg className="absolute left-4 top-3.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
+                            d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                </div>
+                
+                <h3 className="text-lg font-semibold text-gray-800">Savings & Investments</h3>
+                
+                <div>
+                  <label className="block text-gray-700 font-semibold mb-2" htmlFor="currentSavings">
+                    Current Savings
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="number"
+                      id="currentSavings"
+                      name="currentSavings"
+                      className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:border-indigo-500 focus:outline-none transition-all duration-300 focus:transform focus:scale-105"
+                      placeholder="Current Savings Amount"
+                      value={formData.currentSavings}
+                      onChange={handleChange}
+                      required
+                    />
+                    <svg className="absolute left-4 top-3.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
+                            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                    </svg>
+                  </div>
+                </div>
+                
+                <div>
+                  <label className="block text-gray-700 font-semibold mb-2" htmlFor="emergencyFundStatus">
+                    Emergency Fund Status
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      id="emergencyFundStatus"
+                      name="emergencyFundStatus"
+                      className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:border-indigo-500 focus:outline-none transition-all duration-300 focus:transform focus:scale-105"
+                      placeholder="e.g., Fully Funded, Partially Funded, Not Started"
+                      value={formData.emergencyFundStatus}
+                      onChange={handleChange}
+                      required
+                    />
+                    <svg className="absolute left-4 top-3.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
+                            d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                </div>
+                
+                <div>
+                  <label className="block text-gray-700 font-semibold mb-2" htmlFor="investmentTypes">
+                    Investment Types
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      id="investmentTypes"
+                      name="investmentTypes"
+                      className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:border-indigo-500 focus:outline-none transition-all duration-300 focus:transform focus:scale-105"
+                      placeholder="e.g., Stocks, Crypto, Mutual Funds, None"
+                      value={formData.investmentTypes}
+                      onChange={handleChange}
+                      required
+                    />
+                    <svg className="absolute left-4 top-3.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
+                            d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                    </svg>
+                  </div>
+                </div>
+                
+                <h3 className="text-lg font-semibold text-gray-800">Debts</h3>
+                
+                <div>
+                  <label className="block text-gray-700 font-semibold mb-2" htmlFor="loans">
+                    Loans
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      id="loans"
+                      name="loans"
+                      className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:border-indigo-500 focus:outline-none transition-all duration-300 focus:transform focus:scale-105"
+                      placeholder="e.g., Student: $10000, Car: $5000"
+                      value={formData.loans}
+                      onChange={handleChange}
+                      required
+                    />
+                    <svg className="absolute left-4 top-3.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
+                            d="M17 9V7a5 5 0 00-10 0v2m-2 4h14a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm-2-2h10" />
+                    </svg>
+                  </div>
+                </div>
+                
+                <div>
+                  <label className="block text-gray-700 font-semibold mb-2" htmlFor="creditCardDues">
+                    Credit Card Dues
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="number"
+                      id="creditCardDues"
+                      name="creditCardDues"
+                      className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:border-indigo-500 focus:outline-none transition-all duration-300 focus:transform focus:scale-105"
+                      placeholder="Total Credit Card Dues"
+                      value={formData.creditCardDues}
+                      onChange={handleChange}
+                      required
+                    />
+                    <svg className="absolute left-4 top-3.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
+                            d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                    </svg>
+                  </div>
+                </div>
+                
+                <div>
+                  <label className="block text-gray-700 font-semibold mb-2" htmlFor="emiDetails">
+                    EMI Details
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      id="emiDetails"
+                      name="emiDetails"
+                      className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:border-indigo-500 focus:outline-none transition-all duration-300 focus:transform focus:scale-105"
+                      placeholder="e.g., Car EMI: $300/month, Home EMI: $1200/month"
+                      value={formData.emiDetails}
+                      onChange={handleChange}
+                      required
+                    />
+                    <svg className="absolute left-4 top-3.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
+                            d="M17 9V7a5 5 0 00-10 0v2m-2 4h14a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm-2-2h10" />
+                    </svg>
+                  </div>
+                </div>
+                
+                <h3 className="text-lg font-semibold text-gray-800">Assets & Liabilities</h3>
+                
+                <div>
+                  <label className="block text-gray-700 font-semibold mb-2" htmlFor="bankAccounts">
+                    Bank Accounts
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      id="bankAccounts"
+                      name="bankAccounts"
+                      className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:border-indigo-500 focus:outline-none transition-all duration-300 focus:transform focus:scale-105"
+                      placeholder="e.g., Checking, Savings"
+                      value={formData.bankAccounts}
+                      onChange={handleChange}
+                      required
+                    />
+                    <svg className="absolute left-4 top-3.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
+                            d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                    </svg>
+                  </div>
+                </div>
+                
+                <div>
+                  <label className="block text-gray-700 font-semibold mb-2" htmlFor="propertyOwnership">
+                    Property Ownership
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      id="propertyOwnership"
+                      name="propertyOwnership"
+                      className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:border-indigo-500 focus:outline-none transition-all duration-300 focus:transform focus:scale-105"
+                      placeholder="e.g., Yes (House), No"
+                      value={formData.propertyOwnership}
+                      onChange={handleChange}
+                      required
+                    />
+                    <svg className="absolute left-4 top-3.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
+                            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                    </svg>
+                  </div>
+                </div>
+                
+                <div>
+                  <label className="block text-gray-700 font-semibold mb-2" htmlFor="carOwnership">
+                    Car Ownership
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      id="carOwnership"
+                      name="carOwnership"
+                      className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:border-indigo-500 focus:outline-none transition-all duration-300 focus:transform focus:scale-105"
+                      placeholder="e.g., Yes (Toyota Camry), No"
+                      value={formData.carOwnership}
+                      onChange={handleChange}
+                      required
+                    />
+                    <svg className="absolute left-4 top-3.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
+                            d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+                    </svg>
+                  </div>
+                </div>
+                
+                {error && (
+                  <div className="bg-red-50 border border-red-200 rounded-xl p-4 animate-shake">
+                    <div className="flex items-center">
+                      <svg className="w-5 h-5 text-red-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
+                              d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <p className="text-red-700 text-sm font-medium">{error}</p>
+                    </div>
+                  </div>
+                )}
+                
+                <button 
+                  type="button" 
+                  disabled={loading}
+                  className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold py-3 px-4 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                  onClick={handleSignup}
+                >
+                  <div className="flex items-center justify-center">
+                    {loading && (
+                      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                    )}
+                    {loading ? 'Creating Account...' : 'Create Account'}
+                  </div>
+                </button>
+              </div>
+              
+              <div className="mt-8 pt-6 border-t border-gray-200">
+                <p className="text-center text-gray-600 text-sm">
+                  Already have an account?{' '}
+                  <ReactRouterDOM.Link to="/login" className="text-indigo-600 hover:text-indigo-800 font-semibold hover:underline transition-colors duration-200">
+                    Login here
+                  </ReactRouterDOM.Link>
+                </p>
+              </div>
+            </div>
+            
+            <div className="mt-6 text-center">
+              <div className="flex items-center justify-center space-x-6 text-white/90 text-xs">
+                <div className="flex items-center bg-white/10 rounded-full px-3 py-1 backdrop-blur-sm">
+                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
+                          d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  </svg>
+                  256-bit SSL Security
+                </div>
+                <div className="flex items-center bg-white/10 rounded-full px-3 py-1 backdrop-blur-sm">
+                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
+                          d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  </svg>
+                  Data Protected
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // Dashboard Component (Placeholder)
+    function Dashboard() {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-gray-100">
+          <h1 className="text-3xl font-bold">Welcome to Walletto Dashboard</h1>
+        </div>
+      );
+    }
+
+    // App Component
+    function App() {
+      const { Routes, Route } = ReactRouterDOM;
+      return (
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/" element={<Login />} />
+        </Routes>
+      );
+    }
+
+    // Render the App
+    const { HashRouter } = ReactRouterDOM;
+    ReactDOM.render(
+      <HashRouter>
+        <App />
+      </HashRouter>,
+      document.getElementById('root')
+    );
+  </script>
+</body>
+</html>
