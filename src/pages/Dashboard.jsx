@@ -55,17 +55,37 @@ const Dashboard = () => {
     );
   }
 
-  if (!user || !userData) {
+  if (!user) {
     return (
       <div className="loading-screen">
         <div className="spinner"></div>
-        <p>Loading user data...</p>
+        <p>Loading your profile...</p>
       </div>
     );
   }
 
-  const totalIncome = userData.monthlySalary + userData.passiveIncome;
-  const totalExpenses = userData.recurringExpenses + userData.variableExpenses + userData.oneTimeExpenses;
+  if (!userData) {
+    return (
+      <div className="loading-screen" style={{ flexDirection: 'column', textAlign: 'center' }}>
+        <p style={{ color: '#fff', marginBottom: '1rem', fontSize: '1.2rem' }}>
+          Could not load your financial data.
+        </p>
+        <p style={{ color: '#aaa', marginBottom: '2rem', maxWidth: '400px' }}>
+          This usually happens if the <b>Firestore Database</b> hasn't been created in your Firebase Console, or if security rules block access.
+        </p>
+        <button
+          onClick={handleLogout}
+          style={{ padding: '12px 24px', backgroundColor: '#10b981', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}
+        >
+          Logout and Try Again
+        </button>
+      </div>
+    );
+  }
+
+  const parseNum = (val) => parseFloat(val) || 0;
+  const totalIncome = parseNum(userData.monthlySalary) + parseNum(userData.passiveIncome);
+  const totalExpenses = parseNum(userData.recurringExpenses) + parseNum(userData.variableExpenses) + parseNum(userData.oneTimeExpenses);
   const netIncome = totalIncome - totalExpenses;
   const savingsRate = totalIncome > 0 ? ((netIncome / totalIncome) * 100).toFixed(1) : 0;
 
@@ -84,7 +104,7 @@ const Dashboard = () => {
                   <span className="change positive">+12.5% this month</span>
                 </div>
               </div>
-              
+
               <div className="overview-card expenses">
                 <div className="card-icon">💸</div>
                 <div className="card-content">
@@ -93,7 +113,7 @@ const Dashboard = () => {
                   <span className="change negative">+5.2% this month</span>
                 </div>
               </div>
-              
+
               <div className="overview-card savings">
                 <div className="card-icon">🎯</div>
                 <div className="card-content">
@@ -102,7 +122,7 @@ const Dashboard = () => {
                   <span className="change positive">Savings Rate: {savingsRate}%</span>
                 </div>
               </div>
-              
+
               <div className="overview-card portfolio">
                 <div className="card-icon">📈</div>
                 <div className="card-content">
@@ -126,10 +146,10 @@ const Dashboard = () => {
                 </div>
                 <div className="chart-container">
                   <div className="bar-chart">
-                    <div className="bar income-bar" style={{height: `${(totalIncome / Math.max(totalIncome, totalExpenses)) * 100}%`}}>
+                    <div className="bar income-bar" style={{ height: `${(totalIncome / Math.max(totalIncome, totalExpenses)) * 100}%` }}>
                       <span className="bar-label">${totalIncome.toLocaleString()}</span>
                     </div>
-                    <div className="bar expenses-bar" style={{height: `${(totalExpenses / Math.max(totalIncome, totalExpenses)) * 100}%`}}>
+                    <div className="bar expenses-bar" style={{ height: `${(totalExpenses / Math.max(totalIncome, totalExpenses)) * 100}%` }}>
                       <span className="bar-label">${totalExpenses.toLocaleString()}</span>
                     </div>
                   </div>
@@ -148,27 +168,27 @@ const Dashboard = () => {
                       <span className="budget-amount">${userData.recurringExpenses.toLocaleString()}</span>
                     </div>
                     <div className="budget-bar">
-                      <div className="budget-fill recurring" style={{width: `${(userData.recurringExpenses / totalExpenses) * 100}%`}}></div>
+                      <div className="budget-fill recurring" style={{ width: `${(userData.recurringExpenses / totalExpenses) * 100}%` }}></div>
                     </div>
                   </div>
-                  
+
                   <div className="budget-item">
                     <div className="budget-info">
                       <span className="budget-category">Variable Expenses</span>
                       <span className="budget-amount">${userData.variableExpenses.toLocaleString()}</span>
                     </div>
                     <div className="budget-bar">
-                      <div className="budget-fill variable" style={{width: `${(userData.variableExpenses / totalExpenses) * 100}%`}}></div>
+                      <div className="budget-fill variable" style={{ width: `${(userData.variableExpenses / totalExpenses) * 100}%` }}></div>
                     </div>
                   </div>
-                  
+
                   <div className="budget-item">
                     <div className="budget-info">
                       <span className="budget-category">One-time Expenses</span>
                       <span className="budget-amount">${userData.oneTimeExpenses.toLocaleString()}</span>
                     </div>
                     <div className="budget-bar">
-                      <div className="budget-fill onetime" style={{width: `${(userData.oneTimeExpenses / totalExpenses) * 100}%`}}></div>
+                      <div className="budget-fill onetime" style={{ width: `${(userData.oneTimeExpenses / totalExpenses) * 100}%` }}></div>
                     </div>
                   </div>
                 </div>
@@ -186,27 +206,27 @@ const Dashboard = () => {
                       <span className="goal-progress">85%</span>
                     </div>
                     <div className="progress-bar">
-                      <div className="progress-fill" style={{width: '85%'}}></div>
+                      <div className="progress-fill" style={{ width: '85%' }}></div>
                     </div>
                   </div>
-                  
+
                   <div className="goal-item">
                     <div className="goal-info">
                       <span className="goal-name">Vacation Fund</span>
                       <span className="goal-progress">45%</span>
                     </div>
                     <div className="progress-bar">
-                      <div className="progress-fill" style={{width: '45%'}}></div>
+                      <div className="progress-fill" style={{ width: '45%' }}></div>
                     </div>
                   </div>
-                  
+
                   <div className="goal-item">
                     <div className="goal-info">
                       <span className="goal-name">New House</span>
                       <span className="goal-progress">12%</span>
                     </div>
                     <div className="progress-bar">
-                      <div className="progress-fill" style={{width: '12%'}}></div>
+                      <div className="progress-fill" style={{ width: '12%' }}></div>
                     </div>
                   </div>
                 </div>
@@ -266,7 +286,7 @@ const Dashboard = () => {
             <h1>Walletto</h1>
           </div>
         </div>
-        
+
         <nav className="sidebar-nav">
           <button
             className={`nav-item ${activeTab === 'dashboard' ? 'active' : ''}`}
@@ -275,7 +295,7 @@ const Dashboard = () => {
             <span className="nav-icon">🏠</span>
             Dashboard
           </button>
-          
+
           <button
             className={`nav-item ${activeTab === 'transactions' ? 'active' : ''}`}
             onClick={() => setActiveTab('transactions')}
@@ -283,7 +303,7 @@ const Dashboard = () => {
             <span className="nav-icon">💳</span>
             Transactions
           </button>
-          
+
           <button
             className={`nav-item ${activeTab === 'analytics' ? 'active' : ''}`}
             onClick={() => setActiveTab('analytics')}
@@ -291,7 +311,7 @@ const Dashboard = () => {
             <span className="nav-icon">📊</span>
             Analytics
           </button>
-          
+
           <button
             className={`nav-item ${activeTab === 'profile' ? 'active' : ''}`}
             onClick={() => setActiveTab('profile')}
@@ -299,7 +319,7 @@ const Dashboard = () => {
             <span className="nav-icon">👤</span>
             Profile
           </button>
-          
+
           <button
             className={`nav-item ${activeTab === 'teaching' ? 'active' : ''}`} // Added Teaching button
             onClick={() => setActiveTab('teaching')}
@@ -308,7 +328,7 @@ const Dashboard = () => {
             Teaching
           </button>
         </nav>
-        
+
         <div className="sidebar-footer">
           <div className="user-info">
             <div className="user-avatar">{userData.name?.charAt(0).toUpperCase()}</div>
@@ -332,7 +352,7 @@ const Dashboard = () => {
             <p className="header-subtitle">Here's your financial overview for today</p>
           </div>
         </header>
-        
+
         <div className="content-wrapper">
           {renderContent()}
         </div>

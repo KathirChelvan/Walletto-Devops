@@ -103,15 +103,15 @@ const Profile = ({ user, userData }) => {
           <div className="flex items-center">
             <div className="bg-white/20 rounded-full p-3 mr-4">
               <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
-                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>
             </div>
             <div>
               <h1 className="text-2xl font-bold">{userData.name}</h1>
               <p className="text-indigo-100">{userData.email}</p>
               <p className="text-indigo-200 text-sm">
-                Member since {userData.createdAt ? new Date(userData.createdAt.toDate()).toLocaleDateString() : 'Unknown'}
+                Member since {userData.createdAt ? new Date(typeof userData.createdAt.toDate === 'function' ? userData.createdAt.toDate() : userData.createdAt).toLocaleDateString() : 'Unknown'}
               </p>
             </div>
           </div>
@@ -145,8 +145,8 @@ const Profile = ({ user, userData }) => {
                 className="px-4 py-2 bg-white text-indigo-600 hover:bg-gray-100 rounded-lg font-medium transition-colors flex items-center"
               >
                 <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
-                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                 </svg>
                 Edit Profile
               </button>
@@ -157,14 +157,13 @@ const Profile = ({ user, userData }) => {
 
       {/* Success/Error Message */}
       {message.text && (
-        <div className={`mb-6 p-4 rounded-lg flex items-center ${
-          message.type === 'success' 
-            ? 'bg-green-50 border border-green-200 text-green-700' 
+        <div className={`mb-6 p-4 rounded-lg flex items-center ${message.type === 'success'
+            ? 'bg-green-50 border border-green-200 text-green-700'
             : 'bg-red-50 border border-red-200 text-red-700'
-        }`}>
+          }`}>
           <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
-                  d={message.type === 'success' ? "M5 13l4 4L19 7" : "M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"} />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+              d={message.type === 'success' ? "M5 13l4 4L19 7" : "M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"} />
           </svg>
           {message.text}
         </div>
@@ -172,12 +171,12 @@ const Profile = ({ user, userData }) => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Personal Information */}
-        <ProfileSection 
+        <ProfileSection
           title="Personal Information"
           icon={
             <svg className="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
-                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
           }
         >
@@ -190,12 +189,12 @@ const Profile = ({ user, userData }) => {
         </ProfileSection>
 
         {/* Financial Goals */}
-        <ProfileSection 
+        <ProfileSection
           title="Financial Goals"
           icon={
             <svg className="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
-                    d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
             </svg>
           }
         >
@@ -204,12 +203,12 @@ const Profile = ({ user, userData }) => {
         </ProfileSection>
 
         {/* Income Sources */}
-        <ProfileSection 
+        <ProfileSection
           title="Income Sources"
           icon={
             <svg className="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
-                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
             </svg>
           }
         >
@@ -218,12 +217,12 @@ const Profile = ({ user, userData }) => {
         </ProfileSection>
 
         {/* Expenses */}
-        <ProfileSection 
+        <ProfileSection
           title="Monthly Expenses"
           icon={
             <svg className="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
-                    d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
             </svg>
           }
         >
@@ -233,12 +232,12 @@ const Profile = ({ user, userData }) => {
         </ProfileSection>
 
         {/* Assets & Savings */}
-        <ProfileSection 
+        <ProfileSection
           title="Assets & Savings"
           icon={
             <svg className="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
-                    d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
             </svg>
           }
         >
@@ -248,12 +247,12 @@ const Profile = ({ user, userData }) => {
         </ProfileSection>
 
         {/* Investments */}
-        <ProfileSection 
+        <ProfileSection
           title="Investments"
           icon={
             <svg className="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
-                    d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
             </svg>
           }
         >
@@ -261,12 +260,12 @@ const Profile = ({ user, userData }) => {
         </ProfileSection>
 
         {/* Debts & Liabilities */}
-        <ProfileSection 
+        <ProfileSection
           title="Debts & Liabilities"
           icon={
             <svg className="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
-                    d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           }
         >
@@ -276,12 +275,12 @@ const Profile = ({ user, userData }) => {
         </ProfileSection>
 
         {/* Property & Assets */}
-        <ProfileSection 
+        <ProfileSection
           title="Property & Major Assets"
           icon={
             <svg className="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
-                    d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
             </svg>
           }
         >
@@ -292,12 +291,12 @@ const Profile = ({ user, userData }) => {
 
       {/* Financial Summary */}
       <div className="mt-8">
-        <ProfileSection 
+        <ProfileSection
           title="Financial Summary"
           icon={
             <svg className="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
-                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
             </svg>
           }
         >
@@ -314,23 +313,20 @@ const Profile = ({ user, userData }) => {
                 {formatCurrency((userData.recurringExpenses || 0) + (userData.variableExpenses || 0) + (userData.oneTimeExpenses || 0))}
               </p>
             </div>
-            <div className={`rounded-lg p-4 text-center ${
-              ((userData.monthlySalary || 0) + (userData.passiveIncome || 0)) - 
-              ((userData.recurringExpenses || 0) + (userData.variableExpenses || 0) + (userData.oneTimeExpenses || 0)) >= 0
+            <div className={`rounded-lg p-4 text-center ${((userData.monthlySalary || 0) + (userData.passiveIncome || 0)) -
+                ((userData.recurringExpenses || 0) + (userData.variableExpenses || 0) + (userData.oneTimeExpenses || 0)) >= 0
                 ? 'bg-blue-50' : 'bg-orange-50'
-            }`}>
-              <h4 className={`text-sm font-medium mb-2 ${
-                ((userData.monthlySalary || 0) + (userData.passiveIncome || 0)) - 
-                ((userData.recurringExpenses || 0) + (userData.variableExpenses || 0) + (userData.oneTimeExpenses || 0)) >= 0
-                  ? 'text-blue-700' : 'text-orange-700'
-              }`}>Net Monthly Income</h4>
-              <p className={`text-2xl font-bold ${
-                ((userData.monthlySalary || 0) + (userData.passiveIncome || 0)) - 
-                ((userData.recurringExpenses || 0) + (userData.variableExpenses || 0) + (userData.oneTimeExpenses || 0)) >= 0
-                  ? 'text-blue-600' : 'text-orange-600'
               }`}>
+              <h4 className={`text-sm font-medium mb-2 ${((userData.monthlySalary || 0) + (userData.passiveIncome || 0)) -
+                  ((userData.recurringExpenses || 0) + (userData.variableExpenses || 0) + (userData.oneTimeExpenses || 0)) >= 0
+                  ? 'text-blue-700' : 'text-orange-700'
+                }`}>Net Monthly Income</h4>
+              <p className={`text-2xl font-bold ${((userData.monthlySalary || 0) + (userData.passiveIncome || 0)) -
+                  ((userData.recurringExpenses || 0) + (userData.variableExpenses || 0) + (userData.oneTimeExpenses || 0)) >= 0
+                  ? 'text-blue-600' : 'text-orange-600'
+                }`}>
                 {formatCurrency(
-                  ((userData.monthlySalary || 0) + (userData.passiveIncome || 0)) - 
+                  ((userData.monthlySalary || 0) + (userData.passiveIncome || 0)) -
                   ((userData.recurringExpenses || 0) + (userData.variableExpenses || 0) + (userData.oneTimeExpenses || 0))
                 )}
               </p>

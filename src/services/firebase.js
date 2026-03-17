@@ -4,13 +4,13 @@ import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCfHrGMJxL6l4wvY3cwnJS0lqFB8N-pkGI",
-  authDomain: "walletto-57635.firebaseapp.com",
-  projectId: "walletto-57635",
-  storageBucket: "walletto-57635.firebasestorage.app",
-  messagingSenderId: "950474308836",
-  appId: "1:950474308836:web:383c646eee89755e80c0f1",
-  measurementId: "G-ZB4S3BTWVQ"
+  apiKey: "AIzaSyBZKFtEvfDIYMG9NztN59clCBPTdOLaf1A",
+  authDomain: "walletto-82ea8.firebaseapp.com",
+  projectId: "walletto-82ea8",
+  storageBucket: "walletto-82ea8.firebasestorage.app",
+  messagingSenderId: "43203611858",
+  appId: "1:43203611858:web:efc8c8e94f626ed863f10b",
+  measurementId: "G-T6FXWSFPP9"
 };
 
 const app = initializeApp(firebaseConfig);

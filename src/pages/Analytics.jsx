@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { 
-  TrendingUp, 
-  DollarSign, 
-  PieChart, 
+import {
+  TrendingUp,
+  DollarSign,
+  PieChart,
   Target,
   ArrowUp,
   ArrowDown,
@@ -126,7 +126,6 @@ const Analytics = ({ user, userData }) => {
                 padding: '0.875rem 1rem',
                 marginBottom: '0',
                 border: 'none',
-                background: 'none',
                 borderRadius: '12px',
                 fontSize: '0.95rem',
                 fontWeight: 500,
@@ -156,16 +155,16 @@ const Analytics = ({ user, userData }) => {
                 <span className="change positive">+8.2% this month</span>
               </div>
             </div>
-            
+
             <div className="overview-card expenses">
               <div className="card-icon">💸</div>
               <div className="card-content">
-                <h3>Total Expenses</h3>  
+                <h3>Total Expenses</h3>
                 <p className="amount">{formatCurrency(totalExpenses)}</p>
                 <span className="change positive">-3.1% this month</span>
               </div>
             </div>
-            
+
             <div className="overview-card savings">
               <div className="card-icon">🎯</div>
               <div className="card-content">
@@ -174,7 +173,7 @@ const Analytics = ({ user, userData }) => {
                 <span className="change positive">+15.7% this month</span>
               </div>
             </div>
-            
+
             <div className="overview-card portfolio">
               <div className="card-icon">📊</div>
               <div className="card-content">
@@ -200,34 +199,34 @@ const Analytics = ({ user, userData }) => {
                   <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
                   <XAxis dataKey="month" stroke="var(--text-secondary)" />
                   <YAxis stroke="var(--text-secondary)" />
-                  <Tooltip 
+                  <Tooltip
                     formatter={(value) => [formatCurrency(value), '']}
-                    contentStyle={{ 
-                      backgroundColor: 'var(--white)', 
-                      border: '1px solid var(--border)', 
-                      borderRadius: '8px' 
+                    contentStyle={{
+                      backgroundColor: 'var(--white)',
+                      border: '1px solid var(--border)',
+                      borderRadius: '8px'
                     }}
                   />
-                  <Line 
-                    type="monotone" 
-                    dataKey="income" 
-                    stroke="var(--success)" 
+                  <Line
+                    type="monotone"
+                    dataKey="income"
+                    stroke="var(--success)"
                     strokeWidth={3}
                     dot={{ fill: 'var(--success)', strokeWidth: 2, r: 4 }}
                     name="Income"
                   />
-                  <Line 
-                    type="monotone" 
-                    dataKey="expenses" 
-                    stroke="var(--error)" 
+                  <Line
+                    type="monotone"
+                    dataKey="expenses"
+                    stroke="var(--error)"
                     strokeWidth={3}
                     dot={{ fill: 'var(--error)', strokeWidth: 2, r: 4 }}
                     name="Expenses"
                   />
-                  <Line 
-                    type="monotone" 
-                    dataKey="savings" 
-                    stroke="var(--primary)" 
+                  <Line
+                    type="monotone"
+                    dataKey="savings"
+                    stroke="var(--primary)"
                     strokeWidth={3}
                     dot={{ fill: 'var(--primary)', strokeWidth: 2, r: 4 }}
                     name="Savings"
@@ -263,12 +262,12 @@ const Analytics = ({ user, userData }) => {
                       <Cell key={`cell-${index}`} fill={entry.color} />
                     ))}
                   </Pie>
-                  <Tooltip 
+                  <Tooltip
                     formatter={(value) => [formatCurrency(value), '']}
-                    contentStyle={{ 
-                      backgroundColor: 'var(--white)', 
-                      border: '1px solid var(--border)', 
-                      borderRadius: '8px' 
+                    contentStyle={{
+                      backgroundColor: 'var(--white)',
+                      border: '1px solid var(--border)',
+                      borderRadius: '8px'
                     }}
                   />
                 </RechartsPieChart>
@@ -289,7 +288,7 @@ const Analytics = ({ user, userData }) => {
                     <span className="budget-amount">{formatCurrency(category.value)}</span>
                   </div>
                   <div className="budget-bar">
-                    <div 
+                    <div
                       className="budget-fill recurring"
                       style={{
                         width: `${(category.value / expenseCategories.reduce((sum, cat) => sum + cat.value, 0)) * 100}%`,
@@ -313,12 +312,12 @@ const Analytics = ({ user, userData }) => {
                   <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
                   <XAxis dataKey="month" stroke="var(--text-secondary)" />
                   <YAxis stroke="var(--text-secondary)" />
-                  <Tooltip 
+                  <Tooltip
                     formatter={(value) => [formatCurrency(value), '']}
-                    contentStyle={{ 
-                      backgroundColor: 'var(--white)', 
-                      border: '1px solid var(--border)', 
-                      borderRadius: '8px' 
+                    contentStyle={{
+                      backgroundColor: 'var(--white)',
+                      border: '1px solid var(--border)',
+                      borderRadius: '8px'
                     }}
                   />
                   <Bar dataKey="expenses" fill="var(--primary)" radius={[4, 4, 0, 0]} />
@@ -347,27 +346,27 @@ const Analytics = ({ user, userData }) => {
                   <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
                   <XAxis dataKey="month" stroke="var(--text-secondary)" />
                   <YAxis stroke="var(--text-secondary)" />
-                  <Tooltip 
+                  <Tooltip
                     formatter={(value) => [formatCurrency(value), '']}
-                    contentStyle={{ 
-                      backgroundColor: 'var(--white)', 
-                      border: '1px solid var(--border)', 
-                      borderRadius: '8px' 
+                    contentStyle={{
+                      backgroundColor: 'var(--white)',
+                      border: '1px solid var(--border)',
+                      borderRadius: '8px'
                     }}
                   />
-                  <Line 
-                    type="monotone" 
-                    dataKey="projected" 
-                    stroke="var(--primary)" 
+                  <Line
+                    type="monotone"
+                    dataKey="projected"
+                    stroke="var(--primary)"
                     strokeWidth={3}
                     strokeDasharray="5 5"
                     dot={{ fill: 'var(--primary)', strokeWidth: 2, r: 4 }}
                     name="Projected"
                   />
-                  <Line 
-                    type="monotone" 
-                    dataKey="actual" 
-                    stroke="var(--success)" 
+                  <Line
+                    type="monotone"
+                    dataKey="actual"
+                    stroke="var(--success)"
                     strokeWidth={3}
                     dot={{ fill: 'var(--success)', strokeWidth: 2, r: 4 }}
                     connectNulls={false}
@@ -394,7 +393,7 @@ const Analytics = ({ user, userData }) => {
                     <div className="progress-fill" style={{ width: '75%' }}></div>
                   </div>
                 </div>
-                
+
                 <div className="goal-item">
                   <div className="goal-info">
                     <span className="goal-name">{userData.financialGoal}</span>
