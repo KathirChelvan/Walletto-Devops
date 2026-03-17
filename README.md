@@ -1,3 +1,4 @@
+
 # Walletto - Personal Finance Management Website with AI teacher
 
 ## Overview
@@ -117,3 +118,6 @@ walletto/
 - Firebase for backend services
 - Tailwind CSS for styling
 - React community for components and inspiration
+=======
+# Walletto-Devops
+>>>>>>> a6f1627c90eb2bb40bfece32404488da6a4f23c3
