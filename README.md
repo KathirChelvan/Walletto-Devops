@@ -4,7 +4,7 @@
 ## Overview
 Walletto is a comprehensive personal finance management application that helps users track their expenses, manage investments, and achieve their financial goals. Built with React, Firebase, and Tailwind CSS, it offers a secure and user-friendly interface for managing personal finances.
 
-## Features
+## Features.
 
 ### 1. User Authentication
 - Secure email and password authentication
